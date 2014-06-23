@@ -227,13 +227,28 @@ class City(object):
 
     def __init__(self, agency=None, city=None, state=None, population=None,
                  violent_crime_rate=None, murder=None, rape=None, robbery=None,
-                 assault=None, property_crime=None, burglary=None, larceny=None,
-                 vehicular=None, year=None):
+                 assault=None, property_crime_rate=None, burglary=None,
+                 larceny=None, vehicular=None, year=None):
 
         """
-        Creates a new city
+        Creates a new city object
 
-        :returns: CityCrime
+        :param str agency: The name of the agency for that city
+        :param float assault: The assault rate
+        :param float burglary: The burglary rate
+        :param str city: The name of the city
+        :param float larceny: The larceny rate
+        :param float murder: The murder rate
+        :param int population: The population
+        :param float property_crime_rate: The property crime rate
+        :param float rape: The rape rate
+        :param float robbery: The robbery rate
+        :param float state: The name of the state
+        :param float vehicular: The vehicular rate?
+        :param float violent_crime_rate: The violent crime rate
+        :param int year: The year
+
+        :returns: City
         """
 
         self.agency = agency
@@ -245,7 +260,7 @@ class City(object):
         self.rape = rape
         self.robbery = robbery
         self.assault = assault
-        self.property_crime = property_crime
+        self.property_crime_rate = property_crime_rate
         self.burglary = burglary
         self.larceny = larceny
         self.vehicular = vehicular
@@ -253,8 +268,8 @@ class City(object):
 
     def __unicode__(self):
 
-        string = """ <City Field: Value> """
-        return string.format()
+        string = """ <City Name: {}> """
+        return string.format(self.city)
 
     def __repr__(self):
         string = self.__unicode__()
@@ -276,20 +291,51 @@ class City(object):
         raise NotImplementedError("Function Not Finished")
 
     @staticmethod
+    def generate_report(json_dict):
+
+        annual_report = dict(assault=json_dict['Assault'],
+                             burglary=json_dict['Burglary'],
+                             larceny=json_dict['Larceny'],
+                             murder=json_dict['Murder'],
+                             property_crime_rate=json_dict['Property'],
+                             rape=json_dict['Rape'],
+                             robbery=json_dict['Robbery'],
+                             vehicular=json_dict['Vehicular'],
+                             violent_crime_rate=json_dict['Violent Crime rate'])
+
+        return annual_report
+
+    @staticmethod
     def _from_json(json_data):
         """
-        Creates a CityCrime from json data.
+        Creates a City from json data.
 
         :param json_data: The raw json data to parse
         :type json_data: dict
-        :returns: CityCrime
+        :returns: City
         """
-        raise NotImplementedError("Function Not Finished")
+
         if json_data is None:
-            return CityCrime()
+            return City()
         try:
-            citycrime = CityCrime(NEED_PARAMS)
-            return citycrime
+
+            json_list = json_data
+            summary_report = {}
+
+            for json_dict in json_list:
+
+                year = json_dict['Year']
+                police_dept = json_dict['Agency']
+                agency = summary_report.get(police_dept)
+
+                if agency is None:
+                    summary_report[police_dept] = {}
+                    summary_report[police_dept]['city'] = json_dict['City']
+
+
+                summary_report[police_dept][year] = City.generate_report(json_dict)
+
+            return summary_report
         except KeyError:
             raise CityCrimeException("The given information was incomplete.")
 
@@ -304,7 +350,7 @@ def _fetch_citycrime_info(params):
     :param dict params: the parameters to pass to the server
     :returns: the JSON response object
     """
-    baseurl = 'http://think.cs.vt.edu:5000/citycrimes'
+    baseurl = 'http://think.cs.vt.edu:5000/citycrime'
     query = _urlencode(baseurl, params)
 
     if PYTHON_3:
@@ -321,10 +367,8 @@ def _fetch_citycrime_info(params):
     if not result:
         raise CityCrimeException("There were no results")
 
-    if _CONNECTED:
-        result = result.replace("// ", "")  # Remove Strange Double Slashes
-        result = result.replace("\n", "")  # Remove All New Lines
-        result = result.replace(" ", "")  # Remove All Extra Spaces
+    result = result.replace("// ", "")  # Remove Double Slashes
+    result = " ".join(result.split())  # Remove Misc 1+ Spaces, Tabs, and New Lines
 
     try:
         if _CONNECTED and _EDITABLE:
@@ -347,5 +391,5 @@ def get_citycrime_information(query):
 
     params = {'where': query}
     json_res = _fetch_citycrime_info(params)
-    citycrime = CityCrime._from_json(json_res)
-    return citycrime._to_dict()
+    city = City._from_json(json_res)
+    return city
