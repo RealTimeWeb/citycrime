@@ -16,3 +16,12 @@ class TestCrimeDatabase(unittest.TestCase):
         citycrime._save_cache()
         self.assertTrue(isinstance(crime_info, list))
 
+    def test_get_crime_offline(self):
+        citycrime.disconnect("./cache.json")
+
+        keys = ['AggravatedAssault', 'Burglary', 'ForcibleRape', 'LarcenyTheft',
+                'Murder', 'Population', 'Property', 'Total', 'VehicleTheft',
+                'Violent', 'Year']
+
+        crime_info = citycrime.get_crimes("State==VA")
+        self.assertTrue(isinstance(crime_info, list))
