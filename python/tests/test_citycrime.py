@@ -12,7 +12,7 @@ class TestCrimeDatabase(unittest.TestCase):
                 'Murder', 'Population', 'Property', 'Total', 'VehicleTheft',
                 'Violent', 'Year']
 
-        crime_info = citycrime.get_citycrime_information("State==VA")
+        crime_info = citycrime.get_crimes("State==VA")
         citycrime._save_cache()
-        self.assertTrue(isinstance(crime_info, dict))
+        self.assertTrue(isinstance(crime_info, list))
 

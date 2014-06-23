@@ -226,45 +226,46 @@ class City(object):
     """
 
     def __init__(self, agency=None, city=None, state=None, population=None,
-                 violent_crime_rate=None, murder=None, rape=None, robbery=None,
-                 assault=None, property_crime_rate=None, burglary=None,
-                 larceny=None, vehicular=None, year=None):
+                 violent_crime_rate=None, murder_rate=None, rape_rate=None,
+                 robbery_rate=None, assault_rate=None, property_crime_rate=None,
+                 burglary_rate=None, larceny_rate=None, vehicular_crime_rate=None,
+                 year=None):
 
         """
         Creates a new city object
 
         :param str agency: The name of the agency for that city
-        :param float assault: The assault rate
+        :param float assault_rate_Rate: The assault rate
         :param float burglary: The burglary rate
         :param str city: The name of the city
-        :param float larceny: The larceny rate
-        :param float murder: The murder rate
+        :param float larceny_rate: The larceny rate
+        :param float murder_rate: The murder rate
         :param int population: The population
         :param float property_crime_rate: The property crime rate
-        :param float rape: The rape rate
-        :param float robbery: The robbery rate
+        :param float rape_rate: The rape rate
+        :param float robbery_rate: The robbery rate
         :param float state: The name of the state
-        :param float vehicular: The vehicular rate?
+        :param float vehicular_crime_rate: The vehicular crime rate
         :param float violent_crime_rate: The violent crime rate
         :param int year: The year
 
         :returns: City
         """
 
+        self.year = year
         self.agency = agency
         self.city = city
         self.state = state
         self.population = population
         self.violent_crime_rate = violent_crime_rate
-        self.murder = murder
-        self.rape = rape
-        self.robbery = robbery
-        self.assault = assault
+        self.murder_rate = murder_rate
+        self.rape_rate = rape_rate
+        self.robbery_rate = robbery_rate
+        self.assault_rate = assault_rate
         self.property_crime_rate = property_crime_rate
-        self.burglary = burglary
-        self.larceny = larceny
-        self.vehicular = vehicular
-        self.year = year
+        self.burglary_rate = burglary_rate
+        self.larceny_rate = larceny_rate
+        self.vehicular_crime_rate = vehicular_crime_rate
 
     def __unicode__(self):
 
@@ -288,20 +289,21 @@ class City(object):
         return string
 
     def _to_dict(self):
-        raise NotImplementedError("Function Not Finished")
+        annual_report = dict(year=self.year,
+                             city=self.city,
+                             agency=self.agency,
+                             state=self.state,
+                             population=self.population,
+                             assault_rate=self.assault_rate,
+                             burglary_rate=self.burglary_rate,
+                             larceny_rate=self.larceny_rate,
+                             murder_rate=self.murder_rate,
+                             property_crime_rate=self.property_crime_rate,
+                             rape_rate=self.rape_rate,
+                             robbery_rate=self.robbery_rate,
+                             vehicular_crime_rate=self.vehicular_crime_rate,
+                             violent_crime_rate=self.violent_crime_rate)
 
-    @staticmethod
-    def generate_report(json_dict):
-
-        annual_report = dict(assault=json_dict['Assault'],
-                             burglary=json_dict['Burglary'],
-                             larceny=json_dict['Larceny'],
-                             murder=json_dict['Murder'],
-                             property_crime_rate=json_dict['Property'],
-                             rape=json_dict['Rape'],
-                             robbery=json_dict['Robbery'],
-                             vehicular=json_dict['Vehicular'],
-                             violent_crime_rate=json_dict['Violent Crime rate'])
 
         return annual_report
 
@@ -318,32 +320,31 @@ class City(object):
         if json_data is None:
             return City()
         try:
-
-            json_list = json_data
-            summary_report = {}
-
-            for json_dict in json_list:
-
-                year = json_dict['Year']
-                police_dept = json_dict['Agency']
-                agency = summary_report.get(police_dept)
-
-                if agency is None:
-                    summary_report[police_dept] = {}
-                    summary_report[police_dept]['city'] = json_dict['City']
-
-
-                summary_report[police_dept][year] = City.generate_report(json_dict)
-
-            return summary_report
+            json_dict = json_data
+            city = City(year=json_dict['Year'],
+                        city=json_dict['City'],
+                        agency=json_dict['Agency'],
+                        state=json_dict['State'],
+                        population=json_dict['Population'],
+                        assault_rate=json_dict['Assault'],
+                        burglary_rate=json_dict['Burglary'],
+                        larceny_rate=json_dict['Larceny'],
+                        murder_rate=json_dict['Murder'],
+                        property_crime_rate=json_dict['Property'],
+                        rape_rate=json_dict['Rape'],
+                        robbery_rate=json_dict['Robbery'],
+                        vehicular_crime_rate=json_dict['Vehicular'],
+                        violent_crime_rate=json_dict['Violent Crime rate'])
+            return city
         except KeyError:
             raise CityCrimeException("The given information was incomplete.")
+
 
 
 # Service Methods
 
 
-def _fetch_citycrime_info(params):
+def _fetch_crimes(params):
     """
     Internal method to form and query the server
 
@@ -380,7 +381,7 @@ def _fetch_citycrime_info(params):
     return json_res
 
 
-def get_citycrime_information(query):
+def get_crimes(query):
     """
     Forms and poses the query to get information from the database
     :param query: the values to retrieve
@@ -390,6 +391,15 @@ def get_citycrime_information(query):
         raise CityCrimeException("Please enter a valid query")
 
     params = {'where': query}
-    json_res = _fetch_citycrime_info(params)
-    city = City._from_json(json_res)
-    return city
+    json_res = _fetch_crimes(params)
+
+    info = []
+    json_list = json_res
+
+    for json_dict in json_list:
+        report = City._from_json(json_dict)
+        info.append(report)
+
+    x = [item._to_dict() for item in info]
+
+    return info
