@@ -235,8 +235,8 @@ class City(object):
         Creates a new city object
 
         :param str agency: The name of the agency for that city
-        :param float assault_rate_Rate: The assault rate
-        :param float burglary: The burglary rate
+        :param float assault_rate: The assault rate
+        :param float burglary_rate: The burglary rate
         :param str city: The name of the city
         :param float larceny_rate: The larceny rate
         :param float murder_rate: The murder rate
@@ -326,15 +326,15 @@ class City(object):
                         agency=json_dict['Agency'],
                         state=json_dict['State'],
                         population=json_dict['Population'],
-                        assault_rate=json_dict['Assault'],
-                        burglary_rate=json_dict['Burglary'],
-                        larceny_rate=json_dict['Larceny'],
-                        murder_rate=json_dict['Murder'],
-                        property_crime_rate=json_dict['Property'],
-                        rape_rate=json_dict['Rape'],
-                        robbery_rate=json_dict['Robbery'],
-                        vehicular_crime_rate=json_dict['Vehicular'],
-                        violent_crime_rate=json_dict['Violent Crime rate'])
+                        assault_rate=json_dict['Assault Rate'],
+                        burglary_rate=json_dict['Burglary Rate'],
+                        larceny_rate=json_dict['Larceny Rate'],
+                        murder_rate=json_dict['Murder Rate'],
+                        property_crime_rate=json_dict['Property Crime Rate'],
+                        rape_rate=json_dict['Rape Rate'],
+                        robbery_rate=json_dict['Robbery Rate'],
+                        vehicular_crime_rate=json_dict['Vehicular Crime Rate'],
+                        violent_crime_rate=json_dict['Violent Crime Rate'])
             return city
         except KeyError:
             raise CityCrimeException("The given information was incomplete.")
