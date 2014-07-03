@@ -394,12 +394,10 @@ def get_crimes(query):
     json_res = _fetch_crimes(params)
 
     info = []
-    json_list = json_res
+    json_list = json_res['_items']
 
     for json_dict in json_list:
         report = City._from_json(json_dict)
         info.append(report)
 
-    x = [item._to_dict() for item in info]
-
-    return info
+    return [item._to_dict() for item in info]

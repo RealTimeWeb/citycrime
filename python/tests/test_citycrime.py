@@ -4,7 +4,8 @@ from python.src import citycrime
 
 class TestCrimeDatabase(unittest.TestCase):
 
-    def test_get_crime_info(self):
+
+    def test_get_crime_online(self):
         citycrime.connect()
         citycrime._start_editing()
 
@@ -16,6 +17,7 @@ class TestCrimeDatabase(unittest.TestCase):
         citycrime._save_cache()
         self.assertTrue(isinstance(crime_info, list))
 
+    # @unittest.skip("Skipping Offline")
     def test_get_crime_offline(self):
         citycrime.disconnect("./cache.json")
 
