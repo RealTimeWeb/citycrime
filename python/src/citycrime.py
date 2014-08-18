@@ -351,7 +351,7 @@ def _fetch_crimes(params):
     :param dict params: the parameters to pass to the server
     :returns: the JSON response object
     """
-    baseurl = 'http://think.cs.vt.edu:5000/citycrime'
+    baseurl = 'http://think.cs.vt.edu/eve/citycrime'
     query = _urlencode(baseurl, params)
 
     if PYTHON_3:
