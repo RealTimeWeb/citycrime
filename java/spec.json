@@ -1,0 +1,96 @@
+{
+    "metadata": {
+        "name": "CityCrime",
+        "description": "RealTimeWeb CityCrime library for educational purposes",
+        "version": 1,
+        "author": "Peeratham Techapalokul",
+        "contact": "tpeera4@vt.edu"
+    },
+    "objects": {
+        "CityCrimeReport": {
+            "description": "A report on crime for a city.",
+            "format": "json",
+            "fields": {
+                "department": {
+                    "type": "string",
+                    "path": "department",
+                    "description": "The name of the police department for that city",
+                    "order": 0
+                },
+                "state": {
+                    "type": "string",
+                    "path": "state",
+                    "description": "Name of the U.S. state where the police department is located.",
+                    "order": 1
+                },
+                "reports": {
+                    "type": "AnnualReport[]",
+                    "path": "data",
+                    "description": "All annual reports for that city",
+                    "order": 2
+                }
+            }
+        },
+        "AnnualReport": {
+            "description": "Report for a particular year for that city",
+            "format": "json",
+            "fields": {
+                "population": {
+                    "type": "integer",
+                    "path": "population",
+                    "description": "The population"
+                },
+                "year": {
+                    "type": "integer",
+                    "path": "year",
+                    "description": "The year"
+                },
+                "assualt_rate": {
+                    "type": "float",
+                    "path": "rates.violent.assault",
+                    "description": "The assault rate"
+                },
+                "murder_rate": {
+                    "type": "float",
+                    "path": "rates.violent.murder",
+                    "description": "The murder rate"
+                },
+                "robbery_rate": {
+                    "type": "float",
+                    "path": "rates.violent.robbery",
+                    "description": "The robbery rate"
+                },
+                "rape_rate": {
+                    "type": "float",
+                    "path": "rates.violent.rape",
+                    "description": "The rape rate"
+                },
+                "burglary_rate": {
+                    "type": "float",
+                    "path": "rates.property.burglary",
+                    "description": "The burglary rate"
+                },
+                "larceny_rate": {
+                    "type": "float",
+                    "path": "rates.property.larceny",
+                    "description": "The larceny rate"
+                },
+                "motor_rate": {
+                    "type": "float",
+                    "path": "rates.property.motor",
+                    "description": "The motor rate"
+                }
+            }
+        }
+    },
+    "functions": {
+        "getReports": {
+            "url": "http://localhost:8080/crime.json",
+            "verb": "get",
+            "description": "get city crime reports",
+            "output": "CityCrimeReport[]",
+            "format": "json",
+            "inputs": {}
+        }
+    }
+}
