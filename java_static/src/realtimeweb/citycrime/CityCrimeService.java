@@ -1,7 +1,7 @@
 package realtimeweb.citycrime;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,15 +21,14 @@ import com.jayway.jsonpath.Option;
 public class CityCrimeService {
 	JSONArray rawData;
 	
-    /**
-     * Creating a new service to read local data source
-     * 
-     * @return CityCrimeService
-     */
-	public CityCrimeService(){
+   /**
+    * Creating a new service to read local data source
+    * @param dataset specify which dataset to use from Dataset
+    */
+	public CityCrimeService(String dataset){
 		try {
-			FileReader reader= new FileReader("data/crime_small.json");
-			rawData = (JSONArray) JSONValue.parseWithException(reader);
+			InputStream stream = CityCrimeService.class.getResourceAsStream(dataset);
+			rawData = (JSONArray) JSONValue.parseWithException(stream);
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

@@ -7,11 +7,12 @@ import java.util.List;
 import org.junit.Test;
 
 import realtimeweb.citycrime.CityCrimeService;
+import realtimeweb.citycrime.Dataset;
 import realtimeweb.citycrime.domain.CityCrime;
 import realtimeweb.citycrime.domain.Report;
 
 public class CityCrimeTest {
-	CityCrimeService crimeService = new CityCrimeService();
+	CityCrimeService crimeService = new CityCrimeService(Dataset.SMALL_DATASET);
 	@Test
 	public void testGetCityCrime() {
 		List<CityCrime> allCityCrime = crimeService.getAllCityCrime();
