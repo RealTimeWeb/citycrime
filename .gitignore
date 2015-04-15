@@ -89,7 +89,7 @@ __pycache__/
 env/
 build/
 develop-eggs/
-dist/
+
 eggs/
 lib/
 lib64/
@@ -127,7 +127,6 @@ coverage.xml
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -138,3 +137,4 @@ hs_err_pid*
 
 compiled/
 *.rkt~
+
